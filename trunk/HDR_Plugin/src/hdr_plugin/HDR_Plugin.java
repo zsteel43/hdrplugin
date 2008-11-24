@@ -3,14 +3,11 @@ package hdr_plugin;
 import ij.*;
 import java.awt.*;
 import ij.plugin.*;
-import org.apache.commons.math.util.MathUtils;
 
 
 public class HDR_Plugin implements PlugIn {
 
     public void run(String arg) {
-        
-        MathUtils.cosh(2.0);
 
         if (arg.equals("about1") || arg.equals("about2")) {
             showAbout();

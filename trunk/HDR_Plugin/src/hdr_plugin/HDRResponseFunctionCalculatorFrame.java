@@ -314,8 +314,8 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
         //MitsunagaCalibrator calibrate = new MitsunagaCalibrator(max_degree,imgPixels,Q);
         //calibrate.doIt();
 
-        DebevecCalibrator calibrate = new DebevecCalibrator(imgPixels, noOfImagesQ, noOfPixelsP, expTimes);
-        calibrate.doIt();
+//        DebevecCalibrator calibrate = new DebevecCalibrator(imgPixels, noOfImagesQ, noOfPixelsP, expTimes);
+  //      calibrate.doIt();
 
 //    int width = imp.getWidth();
 //    int height = imp.getHeight();
