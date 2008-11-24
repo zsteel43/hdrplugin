@@ -11,5 +11,5 @@ package hdr_plugin.calibration;
  */
 public abstract class ZMatrixBuilder {
     private int numberOfPixels;
-    private
+  //  private
 }

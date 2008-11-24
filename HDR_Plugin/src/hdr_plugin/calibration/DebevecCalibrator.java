@@ -9,12 +9,8 @@ import flanagan.math.Matrix;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import no.uib.cipr.matrix.DenseMatrix;
-import no.uib.cipr.matrix.DenseVector;
-import no.uib.cipr.matrix.NotConvergedException;
-import no.uib.cipr.matrix.SVD;
+//import no.uib.cipr.matrix.DenseMatrix;
+//import no.uib.cipr.matrix.DenseVector;
 import org.apache.commons.math.random.RandomData;
 import org.apache.commons.math.random.RandomDataImpl;
 
@@ -52,7 +48,7 @@ public class DebevecCalibrator {
         RandomData rnd = new RandomDataImpl();
         HashSet<Integer> pixtemp = new HashSet<Integer>();
         while (pixtemp.size() < (noOfPixelsP)) {
-            pixtemp.add(new Integer(rnd.nextInt(0, imgPixels[0]));
+   //         pixtemp.add(new Integer(rnd.nextInt(0, imgPixels[0]));
         }
 
         ArrayList<Integer> pixels = new ArrayList<Integer>(pixtemp);
@@ -172,29 +168,29 @@ public class DebevecCalibrator {
         return r;
     }
 
-    public double[] solve(DenseMatrix Vt, DenseMatrix U, double[] s, DenseVector b, int m, int n) {
-        int rnk = rank(s, m, n);
-        DenseVector beta = new DenseVector(U.numRows());
-        // U^t * b = beta
-        U.transMult(b, beta);
-        double[] betaA = beta.getData();
-
-        double[] chi = new double[n];
-        for (int i = 0; i < rnk; i++) {
-            chi[i] = betaA[i] / s[i];
-        }
-
-        for (int i = rnk; i < n; i++) {
-            chi[i] = 0.0;
-        }
-
-        DenseVector chiVec = new DenseVector(chi);
-        System.out.println(Vt.numColumns());
-        DenseMatrix V = new DenseMatrix(Vt.transpose());
-        DenseVector xn = new DenseVector(V.numRows());
-        // V * chiVec = x
-        V.mult(chiVec, xn);
-
-        return xn.getData();
-    }
+//    public double[] solve(DenseMatrix Vt, DenseMatrix U, double[] s, DenseVector b, int m, int n) {
+//        int rnk = rank(s, m, n);
+//        DenseVector beta = new DenseVector(U.numRows());
+//        // U^t * b = beta
+//        U.transMult(b, beta);
+//        double[] betaA = beta.getData();
+//
+//        double[] chi = new double[n];
+//        for (int i = 0; i < rnk; i++) {
+//            chi[i] = betaA[i] / s[i];
+//        }
+//
+//        for (int i = rnk; i < n; i++) {
+//            chi[i] = 0.0;
+//        }
+//
+//        DenseVector chiVec = new DenseVector(chi);
+//        System.out.println(Vt.numColumns());
+//        DenseMatrix V = new DenseMatrix(Vt.transpose());
+//        DenseVector xn = new DenseVector(V.numRows());
+//        // V * chiVec = x
+//        V.mult(chiVec, xn);
+//
+//        return xn.getData();
+  //  }
 }
