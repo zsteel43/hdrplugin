@@ -6,7 +6,9 @@
 package hdr_plugin;
 
 import hdr_plugin.calibration.DebevecCalculator;
+import hdr_plugin.calibration.ResponseFunctionCalculatorSettings;
 import hdr_plugin.helper.ImageJTools;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
 
@@ -49,10 +51,10 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
             if (pix < 0) {
                 return;
             }
-            txtPixels.setText(pix.toString());
+            txtNoOfPixels.setText(pix.toString());
         } catch (Exception e) {
             return;
-        } 
+        }
     }
 
     private boolean validateInput() {
@@ -84,7 +86,7 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         txtExpTimes = new java.awt.TextField();
         txtZmin = new java.awt.TextField();
         txtZmax = new java.awt.TextField();
-        txtPixels = new java.awt.TextField();
+        txtNoOfPixels = new java.awt.TextField();
         lblZmax = new java.awt.Label();
         label1 = new java.awt.Label();
         checkbox1 = new java.awt.Checkbox();
@@ -215,9 +217,9 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
         panel2.add(lblExpTimes, gridBagConstraints);
 
-        txtExpTimes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtExpTimesActionPerformed(evt);
+        txtExpTimes.addTextListener(new java.awt.event.TextListener() {
+            public void textValueChanged(java.awt.event.TextEvent evt) {
+                test(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -261,9 +263,9 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
         panel2.add(txtZmax, gridBagConstraints);
 
-        txtPixels.setEditable(false);
-        txtPixels.setEnabled(false);
-        txtPixels.setText("1");
+        txtNoOfPixels.setEditable(false);
+        txtNoOfPixels.setEnabled(false);
+        txtNoOfPixels.setText("1");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
@@ -271,7 +273,7 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(txtPixels, gridBagConstraints);
+        panel2.add(txtNoOfPixels, gridBagConstraints);
 
         lblZmax.setText("Max. Pixel Value:");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -317,22 +319,30 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
     }//GEN-LAST:event_exitForm
 
     private void btnCalcRespActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcRespActionPerformed
+        if (chcStack.getSelectedIndex() == 0) {
+            IJ.error("Please select a stack to work with!");
+            return;
+        }
 
+        try {
         // get the selected stack from ImageJ
         ImagePlus imp = WindowManager.getImage(chcStack.getSelectedItem());
-
-        // get exposure times from textfield and prepare new double array
-        String[] expTimesTemp = txtExpTimes.getText().split(",");
-        double[] expTimes = new double[expTimesTemp.length];
 
         // get number of pixels, number of images to combine, lowest and highest
         // pixel value (if applicable) from text fields
         int noOfImagesP = Integer.parseInt(txtNoOfImages.getText());
-        int noOfPixelsN = Integer.parseInt(txtPixels.getText());
+        int noOfPixelsN = Integer.parseInt(txtNoOfPixels.getText());
         int Zmin = Integer.parseInt(txtZmin.getText());
         int Zmax = Integer.parseInt(txtZmin.getText());
 
+        String[] values = txtExpTimes.getText().split(",");
+        double[] expTimes = new double[values.length];
+        for (int i = 0; i < expTimes.length; i++) {
+            expTimes[i] = new Double(values[i].trim()).doubleValue();
+        }
+
         if (noOfImagesP == 0) {
+            IJ.error("Please select an appropriate number of images for the calculation of the camera response function");
             return;
         }
 
@@ -341,23 +351,18 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         }
 
         if (noOfImagesP > imp.getStackSize()) {
+            IJ.error("The number of images P is higher than the number of available images in the selected image stack!");
             return;
         }
 
         if (!(noOfImagesP == expTimes.length)) {
+            IJ.error("Exposure Time Missing!","The number of images P is higher than the number of given exposure times!");
             return;
         }
 
-        if (Zmin == 0) {
+        if (Zmin > Zmax) {
+            IJ.error("Zmax is higher than Zmin!");
             return;
-        }
-
-        if (Zmax == 0) {
-            return;
-        }
-
-        for (int i = 0; i < expTimesTemp.length; i++) {
-            expTimes[i] = Double.parseDouble(expTimesTemp[i].trim());
         }
 
         int[][][] imgPixels = ImageJTools.checkAndConvert(imp);
@@ -365,22 +370,23 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         int arrayWidth = imp.getStack().getWidth();
         int arrayHeight = imp.getStack().getHeight();
 
+        ResponseFunctionCalculatorSettings settings = new ResponseFunctionCalculatorSettings();
+        settings.setExpTimes(expTimes);
+        settings.setNoOfChannels(imgPixels.length);
+        settings.setNoOfImagesP(noOfImagesP);
+        settings.setNoOfPixelsN(noOfPixelsN);
+        settings.setZmax(Zmax);
+        settings.setZmin(Zmin);
 
-        //MitsunagaCalibrator calibrate = new MitsunagaCalibrator(max_degree,imgPixels,Q);
-        //calibrate.doIt();
-
-        DebevecCalculator responseFunc = new DebevecCalculator(imgPixels, arrayWidth, arrayHeight, noOfImagesP, noOfPixelsN, expTimes, Zmin, Zmax);
-
+        DebevecCalculator responseFunc = new DebevecCalculator(imgPixels, settings);
+        
         HDRResponseFunctionCalculatorFrame gui = new HDRResponseFunctionCalculatorFrame(responseFunc);
         gui.setVisible(true);
-
-    //new TextWindow("huhu", Integer.toString(a[1] & 0xffff), 400, 400).setVisible(true);
-
+        } catch (Exception e) {
+            //new TextWindow("huhu", Integer.toString(a[1] & 0xffff), 400, 400).setVisible(true);
+            return;
+        }
 }//GEN-LAST:event_btnCalcRespActionPerformed
-
-    private void txtExpTimesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtExpTimesActionPerformed
-        // TODO add your handling code here:
-}//GEN-LAST:event_txtExpTimesActionPerformed
 
     private void txtZminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtZminActionPerformed
         // TODO add your handling code here:
@@ -404,6 +410,10 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
     private void bntCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntCancelActionPerformed
         this.dispose();
     }//GEN-LAST:event_bntCancelActionPerformed
+
+    private void test(java.awt.event.TextEvent evt) {//GEN-FIRST:event_test
+        // TODO add your handling code here:
+    }//GEN-LAST:event_test
 
     /**
      * @param args the command line arguments
@@ -435,7 +445,7 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
     private java.awt.Panel panel2;
     private java.awt.TextField txtExpTimes;
     private java.awt.TextField txtNoOfImages;
-    private java.awt.TextField txtPixels;
+    private java.awt.TextField txtNoOfPixels;
     private java.awt.TextField txtZmax;
     private java.awt.TextField txtZmin;
     // End of variables declaration//GEN-END:variables
