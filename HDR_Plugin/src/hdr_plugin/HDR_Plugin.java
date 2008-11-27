@@ -27,7 +27,7 @@ public class HDR_Plugin implements PlugIn {
         }
         
         if (arg.equals("create")) {
-            HDRResponseFunctionCalculatorFrame gui = new HDRResponseFunctionCalculatorFrame();
+            HDRResponseFunctionSetupFrame gui = new HDRResponseFunctionSetupFrame();
             gui.setVisible(true);            
         }
     }
