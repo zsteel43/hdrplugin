@@ -9,7 +9,6 @@ package hdr_plugin.calibration;
  *
  * @author Alex
  */
-public abstract class ZMatrixBuilder {
-    private int numberOfPixels;
-  //  private
+public interface ResponseFunctionCalculator {
+
 }
