@@ -2,7 +2,7 @@
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.FrameFormInfo">
   <NonVisualComponents>
-    <Component class="hdr_plugin.calibration.DebevecCalculator" name="debevecCalibrator">
+    <Component class="hdr_plugin.calibration.ResponseFunctionCalculatorSettings" name="responseFunctionCalculatorSettings">
     </Component>
   </NonVisualComponents>
   <SyntheticProperties>
@@ -38,9 +38,7 @@
     </Component>
     <Component class="java.awt.TextField" name="textField1">
       <BindingProperties>
-        <BindingProperty name="text" source="debevecCalibrator" sourcePath="${noOfPixelsP}" target="textField1" targetPath="text" updateStrategy="0" immediately="false">
-          <Property name="name" type="java.lang.String" value=""/>
-        </BindingProperty>
+        <BindingProperty name="text" source="responseFunctionCalculatorSettings" sourcePath="${noOfPixelsN}" target="textField1" targetPath="text" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

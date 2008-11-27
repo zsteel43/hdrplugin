@@ -18,11 +18,10 @@ import hdr_plugin.calibration.ResponseFunctionCalculator;
  * @author Alex
  */
 public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
-    private ResponseFunctionCalculator calculator;
 
     /** Creates new form HDRResponseFunctionCalculatorFrame */
     public HDRResponseFunctionCalculatorFrame(ResponseFunctionCalculator calculator) {
-        this.calculator = calculator;
+        this.responseFunctionCalculatorSettings = calculator.getResponseFunctionCalculatorSettings();
         initComponents();
     }
 
@@ -35,7 +34,7 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
     private void initComponents() {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        debevecCalibrator = new hdr_plugin.calibration.DebevecCalculator();
+        responseFunctionCalculatorSettings = new hdr_plugin.calibration.ResponseFunctionCalculatorSettings();
         button1 = new java.awt.Button();
         textField1 = new java.awt.TextField();
 
@@ -49,7 +48,7 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
         button1.setLabel("button1");
         add(button1, new java.awt.GridBagConstraints());
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, debevecCalibrator, org.jdesktop.beansbinding.ELProperty.create("${noOfPixelsP}"), textField1, org.jdesktop.beansbinding.BeanProperty.create("text"), "");
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, responseFunctionCalculatorSettings, org.jdesktop.beansbinding.ELProperty.create("${noOfPixelsN}"), textField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         add(textField1, new java.awt.GridBagConstraints());
@@ -66,7 +65,7 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private java.awt.Button button1;
-    private hdr_plugin.calibration.DebevecCalculator debevecCalibrator;
+    private hdr_plugin.calibration.ResponseFunctionCalculatorSettings responseFunctionCalculatorSettings;
     private java.awt.TextField textField1;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables

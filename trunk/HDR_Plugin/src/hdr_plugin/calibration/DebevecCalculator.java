@@ -5,55 +5,41 @@
 package hdr_plugin.calibration;
 
 import flanagan.math.Matrix;
-import hdr_plugin.helper.ImageJTools;
+import hdr_plugin.helper.ArrayTools;
 import java.io.Serializable;
 
 /**
  *
  * @author Alexander Heidrich
  */
-public class DebevecCalculator implements Serializable, ResponseFunctionCalculator {
+public class DebevecCalculator implements Serializable, ResponseFunctionCalculator  {
 
-    private int Zmin;
-    private int Zmax;
     private int[][][] imgPixelsZ;
-    private int noOfImagesQ;
-    private int noOfPixelsP;
-    private int arrayWidth;
-    private int arrayHeight;
-    private double[] shutterSpeeds;
+    private ResponseFunctionCalculatorSettings settings;
 
-    public DebevecCalculator(int[][][] imgPixelsZ, int arrayWidth, int arrayHeight, int noOfImagesQ, int noOfPixelsP, double[] shutterSpeeds, int Zmin, int Zmax) {
+    public DebevecCalculator(int[][][] imgPixelsZ, ResponseFunctionCalculatorSettings settings) {
         this.imgPixelsZ = imgPixelsZ;
-        this.noOfImagesQ = noOfImagesQ;
-        this.noOfPixelsP = noOfPixelsP;
-        this.shutterSpeeds = shutterSpeeds;
-        this.Zmax = Zmax;
-        this.Zmax = Zmin;
-    }
-
-    public DebevecCalculator() {
-        
+        this.settings = settings;
     }
 
     private double w(int z) {
-        if (z <= 0.5 * (Zmin + Zmax)) {
-            return z - Zmin;
+        if (z <= 0.5 * (settings.getZmin() + settings.getZmax())) {
+            return z - settings.getZmin();
         } else {
-            return Zmax - z;
+            return settings.getZmax() - z;
         }
     }
 
-    public void doIt(int[][] Z) {
-        int n = Zmax-Zmin + 1;
+    public void calcResponse(int[][] Z) {
+        int n = settings.getZmax()-settings.getZmin() + 1;
         int k = 0;
         double lambda = 10;
 
-        double[][] a = new double[getNoOfPixelsP() * noOfImagesQ + n - 1][n + getNoOfPixelsP()];
+        double[][] a = new double[settings.getNoOfPixelsN() * settings.getNoOfImagesP() + n - 1][n + settings.getNoOfPixelsN()];
         double[] b = new double[a.length];
 
         for (int i = 0; i < Z.length; i++) {            // for all pixels
-            for (int j = 0; j < noOfImagesQ; j++) {     // for all images
+            for (int j = 0; j < settings.getNoOfImagesP(); j++) {     // for all images
                 int value = Z[i][j];
                 double wij = w(value);
                 if (wij == 0.) {
@@ -61,7 +47,7 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
                 }
                 a[k][value] = wij;
                 a[k][n + i] = -wij;
-                b[k] = wij * Math.log(shutterSpeeds[j]);
+                b[k] = wij * Math.log(settings.getExpTimes()[j]);
                 k++;
             }
         }
@@ -75,11 +61,11 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
             k++;
         }
 
-        if (k < getNoOfPixelsP() * noOfImagesQ + n - 1) {
-            double[][] at = new double[k][n + getNoOfPixelsP()];
+        if (k < settings.getNoOfPixelsN() * settings.getNoOfImagesP() + n - 1) {
+            double[][] at = new double[k][n + settings.getNoOfPixelsN()];
             double[] bt = new double[k];
-            at = ImageJTools.subarray2D(a, 0, k - 1, 0, n + getNoOfPixelsP() - 1);
-            bt = ImageJTools.subarray1D(b, 0, k - 1);
+            at = ArrayTools.subarray2D(a, 0, k - 1, 0, n + settings.getNoOfPixelsN() - 1);
+            bt = ArrayTools.subarray1D(b, 0, k - 1);
             a = at;
             b = bt;
         }
@@ -92,10 +78,11 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
         }
     }
 
-    /**
-     * @return the noOfPixelsP
-     */
-    public int getNoOfPixelsP() {
-        return noOfPixelsP;
+    public void saveResponse() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public ResponseFunctionCalculatorSettings getResponseFunctionCalculatorSettings() {
+        return settings;
     }
 }
