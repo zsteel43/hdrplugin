@@ -5,10 +5,12 @@
 
 package hdr_plugin.calibration.ZMatrix;
 
+import hdr_plugin.Exceptions.TypeNotSupportedException;
+
 /**
  *
  * @author Alexander Heidrich
  */
 public interface ZMatrixBuilder {
-  int[][][] getZ();
+  int[][][] getZ() throws TypeNotSupportedException;
 }

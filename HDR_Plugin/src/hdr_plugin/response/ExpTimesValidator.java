@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package hdr_plugin.calibration;
+package hdr_plugin.response;
 
 import org.jdesktop.beansbinding.Validator;
 import org.jdesktop.beansbinding.Validator.Result;

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package hdr_plugin.calibration;
+package hdr_plugin.response;
 
 import org.jdesktop.beansbinding.Converter;
 
