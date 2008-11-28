@@ -5,12 +5,14 @@
  */
 package hdr_plugin;
 
-import hdr_plugin.calibration.DebevecCalculator;
-import hdr_plugin.calibration.ResponseFunctionCalculatorSettings;
+import hdr_plugin.calibration.ZMatrix.RandomZMatrixBuilder;
+import hdr_plugin.response.DebevecCalculator;
+import hdr_plugin.response.ResponseFunctionCalculatorSettings;
 import hdr_plugin.helper.ImageJTools;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.WindowManager;
+import ij.text.TextWindow;
 
 /**
  *
@@ -71,11 +73,11 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         java.awt.GridBagConstraints gridBagConstraints;
 
         lblLogo = new javax.swing.JLabel();
-        panel1 = new java.awt.Panel();
+        pnlButtons = new java.awt.Panel();
         btnCalcResp = new java.awt.Button();
         bntCancel = new java.awt.Button();
         bntHelp = new java.awt.Button();
-        panel2 = new java.awt.Panel();
+        pnlContent = new java.awt.Panel();
         lblStack = new java.awt.Label();
         chcStack = new java.awt.Choice();
         lblImageNo = new java.awt.Label();
@@ -108,7 +110,7 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 0, 0);
         add(lblLogo, gridBagConstraints);
 
-        panel1.setLayout(new java.awt.GridBagLayout());
+        pnlButtons.setLayout(new java.awt.GridBagLayout());
 
         btnCalcResp.setLabel("Calculate Response Function");
         btnCalcResp.addActionListener(new java.awt.event.ActionListener() {
@@ -120,7 +122,7 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        panel1.add(btnCalcResp, gridBagConstraints);
+        pnlButtons.add(btnCalcResp, gridBagConstraints);
 
         bntCancel.setLabel("Cancel");
         bntCancel.addActionListener(new java.awt.event.ActionListener() {
@@ -132,7 +134,7 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        panel1.add(bntCancel, gridBagConstraints);
+        pnlButtons.add(bntCancel, gridBagConstraints);
 
         bntHelp.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         bntHelp.setLabel("Help");
@@ -140,14 +142,14 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        panel1.add(bntHelp, gridBagConstraints);
+        pnlButtons.add(bntHelp, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
-        add(panel1, gridBagConstraints);
+        add(pnlButtons, gridBagConstraints);
 
-        panel2.setLayout(new java.awt.GridBagLayout());
+        pnlContent.setLayout(new java.awt.GridBagLayout());
 
         lblStack.setText("HDR Stack:");
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -155,7 +157,7 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(lblStack, gridBagConstraints);
+        pnlContent.add(lblStack, gridBagConstraints);
 
         chcStack.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -168,15 +170,15 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(chcStack, gridBagConstraints);
+        pnlContent.add(chcStack, gridBagConstraints);
 
-        lblImageNo.setText("No. of Images to Combine:");
+        lblImageNo.setText("No. of Images to Combine (P):");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(lblImageNo, gridBagConstraints);
+        pnlContent.add(lblImageNo, gridBagConstraints);
 
         txtNoOfImages.setText("2");
         txtNoOfImages.addTextListener(new java.awt.event.TextListener() {
@@ -191,31 +193,31 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(txtNoOfImages, gridBagConstraints);
+        pnlContent.add(txtNoOfImages, gridBagConstraints);
 
-        lblPixelNo.setText("Number of Pixels to Calculate Response Function:");
+        lblPixelNo.setText("Number of needed Pixels (N)");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(lblPixelNo, gridBagConstraints);
+        pnlContent.add(lblPixelNo, gridBagConstraints);
 
-        lblZmin.setText("Min. Pixel Value:");
+        lblZmin.setText("Min. Pixel Value (Zmin):");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(lblZmin, gridBagConstraints);
+        pnlContent.add(lblZmin, gridBagConstraints);
         lblZmin.getAccessibleContext().setAccessibleName("Min Pixel Value:");
 
-        lblExpTimes.setText("Exposure Times:");
+        lblExpTimes.setText("List of Exposure Times:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(lblExpTimes, gridBagConstraints);
+        pnlContent.add(lblExpTimes, gridBagConstraints);
 
         txtExpTimes.addTextListener(new java.awt.event.TextListener() {
             public void textValueChanged(java.awt.event.TextEvent evt) {
@@ -229,7 +231,7 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 200;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(txtExpTimes, gridBagConstraints);
+        pnlContent.add(txtExpTimes, gridBagConstraints);
 
         txtZmin.setText("0");
         txtZmin.addActionListener(new java.awt.event.ActionListener() {
@@ -248,7 +250,7 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(txtZmin, gridBagConstraints);
+        pnlContent.add(txtZmin, gridBagConstraints);
 
         txtZmax.setText("0");
         txtZmax.addTextListener(new java.awt.event.TextListener() {
@@ -261,7 +263,7 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.gridy = 1;
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(txtZmax, gridBagConstraints);
+        pnlContent.add(txtZmax, gridBagConstraints);
 
         txtNoOfPixels.setEditable(false);
         txtNoOfPixels.setEnabled(false);
@@ -273,42 +275,42 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(txtNoOfPixels, gridBagConstraints);
+        pnlContent.add(txtNoOfPixels, gridBagConstraints);
 
-        lblZmax.setText("Max. Pixel Value:");
+        lblZmax.setText("Max. Pixel Value (Zmax):");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
-        panel2.add(lblZmax, gridBagConstraints);
+        pnlContent.add(lblZmax, gridBagConstraints);
 
         label1.setText("Image Type:");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        panel2.add(label1, gridBagConstraints);
+        pnlContent.add(label1, gridBagConstraints);
 
         checkbox1.setEnabled(false);
         checkbox1.setLabel("16 bit");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
-        panel2.add(checkbox1, gridBagConstraints);
+        pnlContent.add(checkbox1, gridBagConstraints);
 
         checkbox2.setEnabled(false);
         checkbox2.setLabel("RGB");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 5;
-        panel2.add(checkbox2, gridBagConstraints);
+        pnlContent.add(checkbox2, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.insets = new java.awt.Insets(6, 5, 0, 5);
-        add(panel2, gridBagConstraints);
+        add(pnlContent, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -319,8 +321,15 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
     }//GEN-LAST:event_exitForm
 
     private void btnCalcRespActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcRespActionPerformed
+        // check if user has selected a stack
         if (chcStack.getSelectedIndex() == 0) {
             IJ.error("Please select a stack to work with!");
+            return;
+        }
+
+        // check if the user has entered exposure times
+        if (txtExpTimes.getText().equals("")) {
+            IJ.error("Please enter exposure times!");
             return;
         }
 
@@ -333,12 +342,14 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         int noOfImagesP = Integer.parseInt(txtNoOfImages.getText());
         int noOfPixelsN = Integer.parseInt(txtNoOfPixels.getText());
         int Zmin = Integer.parseInt(txtZmin.getText());
-        int Zmax = Integer.parseInt(txtZmin.getText());
+        int Zmax = Integer.parseInt(txtZmax.getText());
 
+        // get the exposure values as string and split this string at every
+        // comma to store the single exposure times in a double array
         String[] values = txtExpTimes.getText().split(",");
         double[] expTimes = new double[values.length];
         for (int i = 0; i < expTimes.length; i++) {
-            expTimes[i] = new Double(values[i].trim()).doubleValue();
+            expTimes[i] = new Double(values[i].trim().replaceAll(" ", ""));
         }
 
         if (noOfImagesP == 0) {
@@ -355,17 +366,29 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
             return;
         }
 
+        if (imp.getStackSize() < 2) {
+            IJ.error("The size of the selected image stack is too small. You need at least two images for the calculation of the camera response function!");
+            return;
+        }
+
         if (!(noOfImagesP == expTimes.length)) {
-            IJ.error("Exposure Time Missing!","The number of images P is higher than the number of given exposure times!");
+            IJ.error("Exposure Times Missing!","The number of images P is higher than the number of given exposure times!");
             return;
         }
 
         if (Zmin > Zmax) {
-            IJ.error("Zmax is higher than Zmin!");
+            IJ.error("Zmin is higher than Zmax!");
             return;
         }
 
-        int[][][] imgPixels = ImageJTools.checkAndConvert(imp);
+        // get image pixel, convert to int and split up into single channels
+        // the structure of the array is
+        // imgPixels[channel][pixel][image]
+        System.out.println("start convert");
+        //int[][][] imgPixels = ImageJTools.checkAndConvert(imp);
+        System.out.println("end convert");
+
+        // ab hier nochmal gucken - die random pixel müssen jetzt noch an den calculator übergeben werden
 
         int arrayWidth = imp.getStack().getWidth();
         int arrayHeight = imp.getStack().getHeight();
@@ -377,13 +400,20 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         settings.setNoOfPixelsN(noOfPixelsN);
         settings.setZmax(Zmax);
         settings.setZmin(Zmin);
+        settings.setHeight(imp.getStack().getHeight());
+        settings.setWidth(imp.getStack().getWidth());
 
-        DebevecCalculator responseFunc = new DebevecCalculator(imgPixels, settings);
+        // select random pixel values as given by the user
+        int[][][] rndPixels = new RandomZMatrixBuilder(imp, settings).getZ();
+        int[][][]
+
+        DebevecCalculator responseFunc = new DebevecCalculator(rndPixels, settings);
         
         HDRResponseFunctionCalculatorFrame gui = new HDRResponseFunctionCalculatorFrame(responseFunc);
         gui.setVisible(true);
         } catch (Exception e) {
-            //new TextWindow("huhu", Integer.toString(a[1] & 0xffff), 400, 400).setVisible(true);
+            e.printStackTrace();
+            new TextWindow("Error!", e.getMessage() + "An error occured while processing your input. Please make sure that you entered all information in the correct (numerical) format.", 400, 400).setVisible(true);
             return;
         }
 }//GEN-LAST:event_btnCalcRespActionPerformed
@@ -441,8 +471,8 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
     private java.awt.Label lblStack;
     private java.awt.Label lblZmax;
     private java.awt.Label lblZmin;
-    private java.awt.Panel panel1;
-    private java.awt.Panel panel2;
+    private java.awt.Panel pnlButtons;
+    private java.awt.Panel pnlContent;
     private java.awt.TextField txtExpTimes;
     private java.awt.TextField txtNoOfImages;
     private java.awt.TextField txtNoOfPixels;

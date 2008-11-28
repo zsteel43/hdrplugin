@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package hdr_plugin.calibration;
+package hdr_plugin.response;
 
 import flanagan.math.Matrix;
 import hdr_plugin.helper.ArrayTools;
@@ -30,7 +30,7 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
         }
     }
 
-    public void calcResponse(int[][] Z) {
+    public void calcResponse(int channel) {
         int n = settings.getZmax()-settings.getZmin() + 1;
         int k = 0;
         double lambda = 10;
@@ -38,9 +38,9 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
         double[][] a = new double[settings.getNoOfPixelsN() * settings.getNoOfImagesP() + n - 1][n + settings.getNoOfPixelsN()];
         double[] b = new double[a.length];
 
-        for (int i = 0; i < Z.length; i++) {            // for all pixels
+        for (int i = 0; i < imgPixelsZ[channel].length; i++) {            // for all pixels
             for (int j = 0; j < settings.getNoOfImagesP(); j++) {     // for all images
-                int value = Z[i][j];
+                int value = imgPixelsZ[channel][i][j];
                 double wij = w(value);
                 if (wij == 0.) {
                     continue;
@@ -84,5 +84,13 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
 
     public ResponseFunctionCalculatorSettings getResponseFunctionCalculatorSettings() {
         return settings;
+    }
+
+    public String getAlgorithm() {
+        return "Debevec";
+    }
+
+    public String getAlgorithmReference() {
+        return " ";
     }
 }

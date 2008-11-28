@@ -4,6 +4,7 @@
  */
 package hdr_plugin.helper;
 
+import hdr_plugin.Exceptions.TypeNotSupportedException;
 import ij.ImagePlus;
 
 /**
@@ -34,6 +35,25 @@ public class ImageJTools {
         return converted;
     }
 
+    public static int getPixelValue(Object pixels, int position, int type, int channel) throws TypeNotSupportedException {
+        switch (type) {
+            case ImagePlus.GRAY16:
+                return ((short[]) pixels)[position] & 0xffff;
+            case ImagePlus.COLOR_RGB:
+                if (channel == 0) {
+                    return (((int[]) pixels)[position] & 0xff0000) >> 16;
+                }
+                if (channel == 1) {
+                    return (((int[]) pixels)[position] & 0x00ff00) >> 8;
+                }
+                if (channel == 2) {
+                    return (((int[]) pixels)[position] & 0x0000ff);
+                }
+            default:
+                throw new TypeNotSupportedException("The image has an unsupported image type!");
+        }
+    }
+
     public static int[][][] checkAndConvert(ImagePlus imp) {
         int type = imp.getType();
         if (type == ImagePlus.GRAY16) {
@@ -43,5 +63,5 @@ public class ImageJTools {
             return convertRGBToInt(imp.getStack().getImageArray(), imp.getStackSize(), imp.getWidth(), imp.getHeight());
         }
         return null;
-    }    
+    }
 }

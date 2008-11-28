@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package hdr_plugin.calibration;
+package hdr_plugin.response;
 
 /**
  *
@@ -15,6 +15,8 @@ public class ResponseFunctionCalculatorSettings {
     private double[] expTimes;
     private int Zmin;
     private int Zmax;
+    private int height;
+    private int width;
 
     public ResponseFunctionCalculatorSettings() {
     }
@@ -101,5 +103,33 @@ public class ResponseFunctionCalculatorSettings {
      */
     public void setZmax(int Zmax) {
         this.Zmax = Zmax;
+    }
+
+    /**
+     * @return the height
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
+     * @param height the height to set
+     */
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    /**
+     * @return the width
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * @param width the width to set
+     */
+    public void setWidth(int width) {
+        this.width = width;
     }
 }
