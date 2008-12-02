@@ -6,11 +6,12 @@ package hdr_plugin.calibration.ZMatrix;
 
 import hdr_plugin.Exceptions.TypeNotSupportedException;
 import hdr_plugin.helper.ImageJTools;
-import hdr_plugin.response.ResponseFunctionCalculatorSettings;
 import ij.ImagePlus;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -18,6 +19,7 @@ import java.util.Random;
  */
 public class RandomZMatrixBuilder implements ZMatrixBuilder {
 
+    public static final Logger log = Logger.getLogger(RandomZMatrixBuilder.class.getName());
     private ImagePlus imp;
     private int noOfImagesP;
     private int noOfPixelsN;
@@ -26,37 +28,38 @@ public class RandomZMatrixBuilder implements ZMatrixBuilder {
     private int imgHeight;
     private Random rnd = new Random();
 
-    public RandomZMatrixBuilder(ImagePlus imp, ResponseFunctionCalculatorSettings settings) {
+    public RandomZMatrixBuilder(ImagePlus imp, int noOfPixelsN, int noOfImagesP) {
         this.imp = imp;
-        this.noOfPixelsN = settings.getNoOfPixelsN();
-        this.noOfChannels = settings.getNoOfChannels();
-        this.noOfImagesP = settings.getNoOfImagesP();
-        this.imgHeight = settings.getHeight();
-        this.imgWidth = settings.getWidth();
+        this.noOfPixelsN = noOfPixelsN;
+        this.noOfChannels = imp.getNChannels();
+        this.noOfImagesP = noOfImagesP;
+        this.imgHeight = imp.getHeight();
+        this.imgWidth = imp.getWidth();
     }
 
     public int[][][] getZ() throws TypeNotSupportedException {
         // collect random image positions
         HashSet<Integer> pixtemp = new HashSet<Integer>();
-        System.out.println("Start random");
+        log.log(Level.FINE, "Selecting random pixels - Start");
         while (pixtemp.size() < (noOfPixelsN)) {
             pixtemp.add(getNextRandom());
         }
-        System.out.println("End random");
+        log.log(Level.FINE, "Selecting random pixels - End");
         // convert to ArrayList for easier access to the elements
         ArrayList<Integer> pixels = new ArrayList<Integer>(pixtemp);
         // create new Z matrix
         int[][][] Z = new int[noOfChannels][noOfPixelsN][noOfImagesP];
         // fill matrix
-        System.out.println("start matrix");
-        for (int i = 0; i < Z.length; i++) { // for all channels
-            for (int j = 0; j < Z[i].length; j++) { // for all pixels
-                for (int k = 0; k < Z[i][j].length; k++) { // for all images
-                    Z[i][j][k] = ImageJTools.getPixelValue(imp.getImageStack().getPixels(k), i, k, noOfChannels);
+        log.log(Level.FINE, "Filling Z-Matrix - Start");
+        for (int i = 0; i < Z.length; i++) {                 // for all channels
+            for (int j = 0; j < Z[i].length; j++) {          // for all pixels
+                for (int k = 0; k < Z[i][j].length; k++) {   // for all images
+                    // ImageJ counts images starting at 1 so 1 has to be added to k
+                    Z[i][j][k] = ImageJTools.getPixelValue(imp.getImageStack().getPixels(k + 1), pixels.get(j), imp.getType(), noOfChannels);
                 }
             }
         }
-        System.out.println("end matrix");
+        log.log(Level.FINE, "Filling Z-Matrix - End");
         return Z;
     }
 
