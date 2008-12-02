@@ -12,7 +12,7 @@ import ij.ImagePlus;
  * @author Alex
  */
 public class ImageJTools {
-
+   
     private static int[][][] convert16bitGrayToInt(Object[] imageArray, int noOfImagesQ, int imgWidth, int imgHeight) {
         int[][][] converted = new int[1][imgWidth * imgHeight][noOfImagesQ];
         for (int i = 0; i < noOfImagesQ; i++) {
@@ -35,6 +35,15 @@ public class ImageJTools {
         return converted;
     }
 
+    /**
+     * 
+     * @param pixels
+     * @param position
+     * @param type
+     * @param channel
+     * @return
+     * @throws hdr_plugin.Exceptions.TypeNotSupportedException
+     */
     public static int getPixelValue(Object pixels, int position, int type, int channel) throws TypeNotSupportedException {
         switch (type) {
             case ImagePlus.GRAY16:
@@ -53,7 +62,13 @@ public class ImageJTools {
                 throw new TypeNotSupportedException("The image has an unsupported image type!");
         }
     }
+    
 
+    /**
+     *
+     * @param imp
+     * @return
+     */
     public static int[][][] checkAndConvert(ImagePlus imp) {
         int type = imp.getType();
         if (type == ImagePlus.GRAY16) {

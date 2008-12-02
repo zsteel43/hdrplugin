@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * @author Alexander Heidrich
  */
-public class DebevecCalculator implements Serializable, ResponseFunctionCalculator  {
+public class DebevecCalculator implements Serializable, ResponseFunctionCalculator {
 
     private int[][][] imgPixelsZ;
     private ResponseFunctionCalculatorSettings settings;
@@ -30,16 +30,17 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
         }
     }
 
-    public void calcResponse(int channel) {
-        int n = settings.getZmax()-settings.getZmin() + 1;
+    public double[] calcResponse(int channel) {
+        int n = settings.getZmax() - settings.getZmin() + 1;
+        int mid = n / 2;
         int k = 0;
-        double lambda = 10;
+        double lambda = 1;
 
         double[][] a = new double[settings.getNoOfPixelsN() * settings.getNoOfImagesP() + n - 1][n + settings.getNoOfPixelsN()];
         double[] b = new double[a.length];
 
-        for (int i = 0; i < imgPixelsZ[channel].length; i++) {            // for all pixels
-            for (int j = 0; j < settings.getNoOfImagesP(); j++) {     // for all images
+        for (int i = 0; i < imgPixelsZ[channel].length; i++) {    // for all pixels
+            for (int j = 0; j < settings.getNoOfImagesP(); j++) { // for all images
                 int value = imgPixelsZ[channel][i][j];
                 double wij = w(value);
                 if (wij == 0.) {
@@ -51,7 +52,8 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
                 k++;
             }
         }
-        a[k][128] = 1.0;
+
+        a[k][mid] = 1.0;
         k++;
 
         for (int i = 0; i < n - 2; i++) {
@@ -70,12 +72,22 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
             b = bt;
         }
 
+//        for (int i = 0; i < a.length; i++) {
+//            for(int q = 0; q < a[i].length; q++) {
+//                System.out.print(a[i][q] + " ");
+//            }
+//            System.out.println();
+//        }
+
         Matrix A = new Matrix(a);
         double[] x = A.solveLinearSet(b);
 
         for (int i = 0; i < x.length; i++) {
             System.out.println(x[i]);
         }
+
+        return ArrayTools.subarray1D(x, 0, n-1);
+
     }
 
     public void saveResponse() {

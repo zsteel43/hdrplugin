@@ -388,14 +388,13 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         //int[][][] imgPixels = ImageJTools.checkAndConvert(imp);
         System.out.println("end convert");
 
-        // ab hier nochmal gucken - die random pixel müssen jetzt noch an den calculator übergeben werden
 
         int arrayWidth = imp.getStack().getWidth();
         int arrayHeight = imp.getStack().getHeight();
 
         ResponseFunctionCalculatorSettings settings = new ResponseFunctionCalculatorSettings();
         settings.setExpTimes(expTimes);
-        settings.setNoOfChannels(imgPixels.length);
+        settings.setNoOfChannels(imp.getNChannels());
         settings.setNoOfImagesP(noOfImagesP);
         settings.setNoOfPixelsN(noOfPixelsN);
         settings.setZmax(Zmax);
@@ -404,8 +403,7 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         settings.setWidth(imp.getStack().getWidth());
 
         // select random pixel values as given by the user
-        int[][][] rndPixels = new RandomZMatrixBuilder(imp, settings).getZ();
-        int[][][]
+        int[][][] rndPixels = new RandomZMatrixBuilder(imp, noOfPixelsN, noOfImagesP).getZ();
 
         DebevecCalculator responseFunc = new DebevecCalculator(rndPixels, settings);
         

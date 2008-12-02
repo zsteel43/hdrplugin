@@ -10,7 +10,7 @@ package hdr_plugin.response;
  */
 public interface ResponseFunctionCalculator {
 
-    public void calcResponse(int channel);
+    public double[] calcResponse(int channel);
 
     public void saveResponse();
 

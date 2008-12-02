@@ -26,6 +26,7 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
         this.calculator = calculator;
         this.txtNoOfPixels.setText(String.valueOf(calculator.getResponseFunctionCalculatorSettings().getNoOfPixelsN()));
         this.txtNoOfChannels.setText(String.valueOf(calculator.getResponseFunctionCalculatorSettings().getNoOfChannels()));
+        this.txtNoOfImages.setText(String.valueOf(calculator.getResponseFunctionCalculatorSettings().getNoOfImagesP()));
         this.txtExpTimes.setText(ArrayTools.arrayToString(calculator.getResponseFunctionCalculatorSettings().getExpTimes()));
         this.lblAlgorithm_.setText(calculator.getAlgorithm());
         this.chcChannel.insert("all", 0);
@@ -93,7 +94,7 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
         txtNoOfImages.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
@@ -103,7 +104,7 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
         txtNoOfChannels.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.ipadx = 50;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
@@ -214,7 +215,7 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
         gridBagConstraints.insets = new java.awt.Insets(1, 1, 1, 1);
         pnlButtons.add(btnCancel, gridBagConstraints);
 
-        btnHelp.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        btnHelp.setFont(new java.awt.Font("Lucida Grande", 1, 13));
         btnHelp.setLabel("Help");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
@@ -240,7 +241,7 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnCalcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcActionPerformed
-        calculator.calcResponse(1);
+       double out[] = calculator.calcResponse(0);
     }//GEN-LAST:event_btnCalcActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
