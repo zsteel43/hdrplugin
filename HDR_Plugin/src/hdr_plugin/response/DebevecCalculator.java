@@ -4,7 +4,8 @@
  */
 package hdr_plugin.response;
 
-import flanagan.math.Matrix;
+//import flanagan.math.Matrix;
+import Jama.Matrix;
 import hdr_plugin.helper.ArrayTools;
 import java.io.Serializable;
 
@@ -80,13 +81,22 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
 //        }
 
         Matrix A = new Matrix(a);
-        double[] x = A.solveLinearSet(b);
+        Matrix B = new Matrix(b, b.length);
+        Matrix x = A.solve(B);
 
-        for (int i = 0; i < x.length; i++) {
-            System.out.println(x[i]);
+        double[][] out = x.getArray();
+
+        for (int i = 0; i < out.length; i++) {
+            for (int j = 0; j < out[i].length; j++) {
+                System.out.println(out[i][j]);
+            }
         }
 
-        return ArrayTools.subarray1D(x, 0, n-1);
+       // for (int i = 0; i < x.length; i++) {
+      //      System.out.println(x[i]);
+      //  }
+
+        return null;// ArrayTools.subarray1D(x, 0, n-1);
 
     }
 
