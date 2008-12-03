@@ -5,9 +5,15 @@
 package hdr_plugin.response;
 
 //import flanagan.math.Matrix;
-import Jama.Matrix;
+
 import hdr_plugin.helper.ArrayTools;
 import java.io.Serializable;
+import no.uib.cipr.matrix.DenseMatrix;
+import no.uib.cipr.matrix.DenseVector;
+import no.uib.cipr.matrix.Matrix;
+import no.uib.cipr.matrix.Vector;
+import no.uib.cipr.matrix.sparse.AbstractIterationMonitor;
+import no.uib.cipr.matrix.sparse.IterativeSolverNotConvergedException;
 
 /**
  *
@@ -36,6 +42,8 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
         int mid = n / 2;
         int k = 0;
         double lambda = 1;
+
+        System.out.println("Debevec start");
 
         double[][] a = new double[settings.getNoOfPixelsN() * settings.getNoOfImagesP() + n - 1][n + settings.getNoOfPixelsN()];
         double[] b = new double[a.length];
@@ -73,28 +81,20 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
             b = bt;
         }
 
-//        for (int i = 0; i < a.length; i++) {
-//            for(int q = 0; q < a[i].length; q++) {
-//                System.out.print(a[i][q] + " ");
-//            }
-//            System.out.println();
-//        }
-
-        Matrix A = new Matrix(a);
-        Matrix B = new Matrix(b, b.length);
-        Matrix x = A.solve(B);
-
-        double[][] out = x.getArray();
-
+        System.out.println("Debevec end");
+        
+        Matrix A = new DenseMatrix(a);
+        Vector B = new DenseVector(b);
+        Vector X = new DenseVector(A.numColumns());        
+        Vector x = A.solve(B, X);
+        DenseVector ax = new DenseVector(x);
+        System.out.println(ax.toString());
+        double[] out = ax.getData();
         for (int i = 0; i < out.length; i++) {
-            for (int j = 0; j < out[i].length; j++) {
-                System.out.println(out[i][j]);
-            }
+            System.out.println(out[i]);
         }
 
-       // for (int i = 0; i < x.length; i++) {
-      //      System.out.println(x[i]);
-      //  }
+        System.out.println("solve end");
 
         return null;// ArrayTools.subarray1D(x, 0, n-1);
 
@@ -114,5 +114,25 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
 
     public String getAlgorithmReference() {
         return " ";
+    }
+
+    public static class SimpleIterationMonitor extends AbstractIterationMonitor {
+
+        private int max;
+
+        private SimpleIterationMonitor(int i) {
+            this.max = i;
+        }
+
+        @Override
+        protected boolean convergedI(double arg0, Vector arg1) throws IterativeSolverNotConvergedException {
+            return convergedI(arg0);
+        }
+
+        @Override
+        protected boolean convergedI(double arg0) throws IterativeSolverNotConvergedException {
+            return iter >= max;
+        }
+
     }
 }
