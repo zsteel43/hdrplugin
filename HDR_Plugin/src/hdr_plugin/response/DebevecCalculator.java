@@ -5,9 +5,26 @@
 package hdr_plugin.response;
 
 //import flanagan.math.Matrix;
-import Jama.Matrix;
+
 import hdr_plugin.helper.ArrayTools;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import no.uib.cipr.matrix.DenseMatrix;
+import no.uib.cipr.matrix.DenseVector;
+import no.uib.cipr.matrix.Matrix;
+import no.uib.cipr.matrix.Vector;
+import no.uib.cipr.matrix.sparse.AMG;
+import no.uib.cipr.matrix.sparse.AbstractIterationMonitor;
+import no.uib.cipr.matrix.sparse.BiCGstab;
+import no.uib.cipr.matrix.sparse.CG;
+import no.uib.cipr.matrix.sparse.CompColMatrix;
+import no.uib.cipr.matrix.sparse.CompRowMatrix;
+import no.uib.cipr.matrix.sparse.ICC;
+import no.uib.cipr.matrix.sparse.ILU;
+import no.uib.cipr.matrix.sparse.IterativeSolver;
+import no.uib.cipr.matrix.sparse.IterativeSolverNotConvergedException;
+import no.uib.cipr.matrix.sparse.Preconditioner;
 
 /**
  *
@@ -36,6 +53,8 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
         int mid = n / 2;
         int k = 0;
         double lambda = 1;
+
+        System.out.println("Debevec start");
 
         double[][] a = new double[settings.getNoOfPixelsN() * settings.getNoOfImagesP() + n - 1][n + settings.getNoOfPixelsN()];
         double[] b = new double[a.length];
@@ -73,6 +92,8 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
             b = bt;
         }
 
+        System.out.println("Debevec end");
+
 //        for (int i = 0; i < a.length; i++) {
 //            for(int q = 0; q < a[i].length; q++) {
 //                System.out.print(a[i][q] + " ");
@@ -80,17 +101,52 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
 //            System.out.println();
 //        }
 
-        Matrix A = new Matrix(a);
-        Matrix B = new Matrix(b, b.length);
-        Matrix x = A.solve(B);
-
-        double[][] out = x.getArray();
-
+        
+        Matrix A = new DenseMatrix(a);
+        Vector B = new DenseVector(b);
+        Vector X = new DenseVector(A.numColumns());        
+        Vector x = A.solve(B, X);
+        DenseVector ax = new DenseVector(x);
+        System.out.println(ax.toString());
+        double[] out = ax.getData();
         for (int i = 0; i < out.length; i++) {
-            for (int j = 0; j < out[i].length; j++) {
-                System.out.println(out[i][j]);
-            }
+            System.out.println(out[i]);
         }
+
+
+        System.out.println("solve end");
+
+
+    //    long t0 = System.currentTimeMillis();
+     //   M.setMatrix(A);
+     //   long t1 = System.currentTimeMillis();
+
+      //  double psec = (t1-t0)/1000.;
+      //  System.out.println("huhu");
+      //  System.out.println(psec);
+
+ //     solv.setIterationMonitor(new SimpleIterationMonitor(100));
+  //      try {
+//            solv.solve(A, B, X);
+            //  Matrix A = new Matrix(a);
+            //  SingularValueDecomposition svd = new SingularValueDecomposition(A);
+    //    } catch (IterativeSolverNotConvergedException ex) {
+    //        Logger.getLogger(DebevecCalculator.class.getName()).log(Level.SEVERE, null, ex);
+    //    }
+
+      //  Matrix A = new Matrix(a);
+      //  SingularValueDecomposition svd = new SingularValueDecomposition(A);
+        
+        //Matrix B = new Matrix(b, b.length);
+        //Matrix x = A.solve(B);
+
+        //double[][] out = x.getArray();
+
+        //for (int i = 0; i < out.length; i++) {
+        //    for (int j = 0; j < out[i].length; j++) {
+        //        System.out.println(out[i][j]);
+         //   }
+        //}
 
        // for (int i = 0; i < x.length; i++) {
       //      System.out.println(x[i]);
@@ -114,5 +170,25 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
 
     public String getAlgorithmReference() {
         return " ";
+    }
+
+    public static class SimpleIterationMonitor extends AbstractIterationMonitor {
+
+        private int max;
+
+        private SimpleIterationMonitor(int i) {
+            this.max = i;
+        }
+
+        @Override
+        protected boolean convergedI(double arg0, Vector arg1) throws IterativeSolverNotConvergedException {
+            return convergedI(arg0);
+        }
+
+        @Override
+        protected boolean convergedI(double arg0) throws IterativeSolverNotConvergedException {
+            return iter >= max;
+        }
+
     }
 }
