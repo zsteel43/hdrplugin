@@ -17,6 +17,8 @@ public class ResponseFunctionCalculatorSettings {
     private int Zmax;
     private int height;
     private int width;
+    private String fileName;
+    private int type;
 
     public ResponseFunctionCalculatorSettings() {
     }
@@ -131,5 +133,33 @@ public class ResponseFunctionCalculatorSettings {
      */
     public void setWidth(int width) {
         this.width = width;
+    }
+
+    /**
+     * @return the fileName
+     */
+    public String getFileName() {
+        return fileName;
+    }
+
+    /**
+     * @param fileName the fileName to set
+     */
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    /**
+     * @return the type
+     */
+    public int getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(int type) {
+        this.type = type;
     }
 }

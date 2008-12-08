@@ -7,7 +7,6 @@ package hdr_plugin.response;
 //import flanagan.math.Matrix;
 
 import hdr_plugin.helper.ArrayTools;
-import java.io.Serializable;
 import no.uib.cipr.matrix.DenseMatrix;
 import no.uib.cipr.matrix.DenseVector;
 import no.uib.cipr.matrix.Matrix;
@@ -19,7 +18,7 @@ import no.uib.cipr.matrix.sparse.IterativeSolverNotConvergedException;
  *
  * @author Alexander Heidrich
  */
-public class DebevecCalculator implements Serializable, ResponseFunctionCalculator {
+public class DebevecCalculator implements ResponseFunctionCalculator {
 
     private int[][][] imgPixelsZ;
     private ResponseFunctionCalculatorSettings settings;
@@ -37,11 +36,10 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
         }
     }
 
-    public double[] calcResponse(int channel) {
+    public double[] calcResponse(int channel, int lambda) {
         int n = settings.getZmax() - settings.getZmin() + 1;
         int mid = n / 2;
         int k = 0;
-        double lambda = 1;
 
         System.out.println("Debevec start");
 
@@ -85,23 +83,11 @@ public class DebevecCalculator implements Serializable, ResponseFunctionCalculat
         
         Matrix A = new DenseMatrix(a);
         Vector B = new DenseVector(b);
-        Vector X = new DenseVector(A.numColumns());        
-        Vector x = A.solve(B, X);
-        DenseVector ax = new DenseVector(x);
-        System.out.println(ax.toString());
-        double[] out = ax.getData();
-        for (int i = 0; i < out.length; i++) {
-            System.out.println(out[i]);
-        }
-
-        System.out.println("solve end");
-
-        return null;// ArrayTools.subarray1D(x, 0, n-1);
-
-    }
-
-    public void saveResponse() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Vector X = new DenseVector(A.numColumns()); 
+        A.solve(B, X);
+        DenseVector ax = new DenseVector(X);
+        double[] result = ax.getData();
+        return ArrayTools.subarray1D(result, 0, n-1);
     }
 
     public ResponseFunctionCalculatorSettings getResponseFunctionCalculatorSettings() {

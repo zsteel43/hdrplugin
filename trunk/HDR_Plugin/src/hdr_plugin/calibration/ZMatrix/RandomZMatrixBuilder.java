@@ -31,7 +31,7 @@ public class RandomZMatrixBuilder implements ZMatrixBuilder {
     public RandomZMatrixBuilder(ImagePlus imp, int noOfPixelsN, int noOfImagesP) {
         this.imp = imp;
         this.noOfPixelsN = noOfPixelsN;
-        this.noOfChannels = imp.getNChannels();
+        this.noOfChannels = imp.getChannelProcessor().getNChannels();
         this.noOfImagesP = noOfImagesP;
         this.imgHeight = imp.getHeight();
         this.imgWidth = imp.getWidth();
@@ -55,7 +55,7 @@ public class RandomZMatrixBuilder implements ZMatrixBuilder {
             for (int j = 0; j < Z[i].length; j++) {          // for all pixels
                 for (int k = 0; k < Z[i][j].length; k++) {   // for all images
                     // ImageJ counts images starting at 1 so 1 has to be added to k
-                    Z[i][j][k] = ImageJTools.getPixelValue(imp.getImageStack().getPixels(k + 1), pixels.get(j), imp.getType(), noOfChannels);
+                    Z[i][j][k] = ImageJTools.getPixelValue(imp.getImageStack().getPixels(k + 1), pixels.get(j), imp.getType(), i);
                 }
             }
         }
