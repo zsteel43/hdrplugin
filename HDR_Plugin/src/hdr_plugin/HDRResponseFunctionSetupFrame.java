@@ -377,31 +377,25 @@ public class HDRResponseFunctionSetupFrame extends java.awt.Frame {
         }
 
         if (Zmin > Zmax) {
-            IJ.error("Zmin is higher than Zmax!");
+            IJ.error("Zmin is greater than Zmax!");
             return;
         }
-
-        // get image pixel, convert to int and split up into single channels
-        // the structure of the array is
-        // imgPixels[channel][pixel][image]
-        System.out.println("start convert");
-        //int[][][] imgPixels = ImageJTools.checkAndConvert(imp);
-        System.out.println("end convert");
-
 
         int arrayWidth = imp.getStack().getWidth();
         int arrayHeight = imp.getStack().getHeight();
 
         ResponseFunctionCalculatorSettings settings = new ResponseFunctionCalculatorSettings();
         settings.setExpTimes(expTimes);
-        settings.setNoOfChannels(imp.getNChannels());
+        settings.setNoOfChannels(imp.getChannelProcessor().getNChannels());
         settings.setNoOfImagesP(noOfImagesP);
         settings.setNoOfPixelsN(noOfPixelsN);
         settings.setZmax(Zmax);
         settings.setZmin(Zmin);
         settings.setHeight(imp.getStack().getHeight());
         settings.setWidth(imp.getStack().getWidth());
-
+        settings.setFileName((imp.getTitle()));
+        settings.setType(imp.getType());
+        
         // select random pixel values as given by the user
         int[][][] rndPixels = new RandomZMatrixBuilder(imp, noOfPixelsN, noOfImagesP).getZ();
 
