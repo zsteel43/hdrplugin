@@ -4,13 +4,18 @@
  */
 package hdr_plugin.response;
 
+import hdr_plugin.Exceptions.TypeNotSupportedException;
+import hdr_plugin.response.weight.WeightFunction;
+
 /**
  *
- * @author Alex
+ * @author Alexander Heidrich
  */
 public interface ResponseFunctionCalculator {
 
-    public double[] calcResponse(int channel, int lambda);
+    public double[] calcResponse(int channel, int lambda) throws TypeNotSupportedException;
+
+    public WeightFunction getW();
 
     public ResponseFunctionCalculatorSettings getResponseFunctionCalculatorSettings();
 

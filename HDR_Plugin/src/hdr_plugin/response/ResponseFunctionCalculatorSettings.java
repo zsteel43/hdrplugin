@@ -9,7 +9,7 @@ package hdr_plugin.response;
  * @author Alex
  */
 public class ResponseFunctionCalculatorSettings {
-    private int noOfImagesP;
+    private int noOfImages;
     private int noOfPixelsN;
     private int noOfChannels;
     private double[] expTimes;
@@ -26,15 +26,15 @@ public class ResponseFunctionCalculatorSettings {
     /**
      * @return the noOfImagesP
      */
-    public int getNoOfImagesP() {
-        return noOfImagesP;
+    public int getNoOfImages() {
+        return noOfImages;
     }
 
     /**
      * @param noOfImagesP the noOfImagesP to set
      */
-    public void setNoOfImagesP(int noOfImagesP) {
-        this.noOfImagesP = noOfImagesP;
+    public void setNoOfImages(int noOfImages) {
+        this.noOfImages = noOfImages;
     }
 
     /**
