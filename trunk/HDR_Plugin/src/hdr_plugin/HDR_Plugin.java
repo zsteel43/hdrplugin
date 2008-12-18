@@ -26,9 +26,19 @@ public class HDR_Plugin implements PlugIn {
             gui.setVisible(true);
         }
         
-        if (arg.equals("create")) {
+        if (arg.equals("response")) {
             HDRResponseFunctionSetupFrame gui = new HDRResponseFunctionSetupFrame();
             gui.setVisible(true);            
+        }
+
+        if (arg.equals("radiance")) {
+            HDRRadianceMapConstructor gui = new HDRRadianceMapConstructor();
+            gui.setVisible(true);
+        }
+
+        if (arg.equals("tonemap")) {
+            HDRToneMapper gui = new HDRToneMapper();
+            gui.setVisible(true);
         }
     }
 

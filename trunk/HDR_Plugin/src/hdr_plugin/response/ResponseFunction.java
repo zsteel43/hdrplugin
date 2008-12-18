@@ -5,6 +5,7 @@
 
 package hdr_plugin.response;
 
+import hdr_plugin.response.weight.WeightFunction;
 import java.io.Serializable;
 
 /**
@@ -14,10 +15,12 @@ import java.io.Serializable;
 public class ResponseFunction implements Serializable {
     private double[][] g;
     private int type;
+    private WeightFunction w;
 
-    public ResponseFunction(double[][] g, int type) {
+    public ResponseFunction(double[][] g, int type, WeightFunction w) {
         this.g = g;
         this.type = type;
+        this.w = w;
     }
 
     /**
@@ -29,6 +32,13 @@ public class ResponseFunction implements Serializable {
 
     public int getType() {
         return type;
+    }
+
+    /**
+     * @return the w
+     */
+    public WeightFunction getW() {
+        return w;
     }
 
 }
