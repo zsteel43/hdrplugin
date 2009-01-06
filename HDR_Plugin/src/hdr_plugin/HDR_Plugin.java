@@ -4,7 +4,6 @@ import ij.*;
 import java.awt.*;
 import ij.plugin.*;
 
-
 public class HDR_Plugin implements PlugIn {
 
     public void run(String arg) {
@@ -25,10 +24,10 @@ public class HDR_Plugin implements PlugIn {
             HDRStackBuilderFrame gui = new HDRStackBuilderFrame();
             gui.setVisible(true);
         }
-        
+
         if (arg.equals("response")) {
             HDRResponseFunctionSetupFrame gui = new HDRResponseFunctionSetupFrame();
-            gui.setVisible(true);            
+            gui.setVisible(true);
         }
 
         if (arg.equals("radiance")) {
@@ -40,6 +39,12 @@ public class HDR_Plugin implements PlugIn {
             HDRToneMapper gui = new HDRToneMapper();
             gui.setVisible(true);
         }
+
+        if (arg.equals("compare")) {
+            ImageCompare gui = new ImageCompare();
+            gui.setVisible(true);
+        }
+
     }
 
     void showAbout() {
