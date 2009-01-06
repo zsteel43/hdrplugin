@@ -10,6 +10,7 @@
  */
 package hdr_plugin;
 
+import hdr_plugin.tonemapping.SimpleToneMapper;
 import hdr_plugin.tonemapping.drago.DragoToneMapper;
 import ij.ImagePlus;
 import ij.WindowManager;
@@ -82,7 +83,8 @@ public class HDRToneMapper extends java.awt.Frame {
         double[] toConvert = map.map();
         short[] out = new short[toConvert.length];
         for (int i = 0; i < toConvert.length; i++) {
-            out[i] = new Long(Math.round(toConvert[i] * 4095)).shortValue();
+            out[i] = new Long(Math.round(toConvert[i] * 255)).shortValue();
+            
         }
         ShortProcessor shortP = new ShortProcessor(imp.getWidth(), imp.getHeight(), out, null);
         ImagePlus newImage = new ImagePlus("Tone Mapped Image", shortP);

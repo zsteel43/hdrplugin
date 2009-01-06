@@ -36,7 +36,7 @@ public class RobertsonCalculator implements ResponseFunctionCalculator {
         int saturated_pixels = 0;
 
         // number of levels
-        int M = 256; //settings.getZmax() - settings.getZmin() + 1;
+        int M = settings.getLevels(); //settings.getZmax() - settings.getZmin() + 1;
 
         // response function
         double[] I[] = new double[3][M];

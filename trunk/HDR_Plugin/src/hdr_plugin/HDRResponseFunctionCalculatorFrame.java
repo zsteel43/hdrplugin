@@ -302,7 +302,7 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
             double[][] g;
             switch (type) {
                 case ImagePlus.COLOR_RGB:
-                    g = new double[3][calculator.getResponseFunctionCalculatorSettings().getZmax() - calculator.getResponseFunctionCalculatorSettings().getZmin() + 1];
+                    g = new double[3][];
                     System.out.println("Channel 0:");
                     g[0] = calculator.calcResponse(0, lambda);
                     System.out.println("Channel 1:");
@@ -318,7 +318,7 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
                     btnSaveTxt.setEnabled(true);
                     break;
                 case ImagePlus.GRAY16:
-                    g = new double[1][calculator.getResponseFunctionCalculatorSettings().getZmax() - calculator.getResponseFunctionCalculatorSettings().getZmin() + 1];
+                    g = new double[1][];
                     g[0] = calculator.calcResponse(0, lambda);
                     out = new ResponseFunction(g, type, calculator.getW());
                     btnCalc.setEnabled(true);
@@ -365,7 +365,7 @@ public class HDRResponseFunctionCalculatorFrame extends java.awt.Frame {
 }//GEN-LAST:event_btnSaveBinActionPerformed
 
     private void btnShowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowActionPerformed
-        double[] yVal = new double[256]; //calculator.getResponseFunctionCalculatorSettings().getZmax() - calculator.getResponseFunctionCalculatorSettings().getZmin() + 1];
+        double[] yVal = new double[calculator.getResponseFunctionCalculatorSettings().getLevels()];
         for (int i = 0; i < yVal.length; i++) {
             yVal[i] = i;
         }

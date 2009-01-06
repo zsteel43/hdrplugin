@@ -19,6 +19,7 @@ public class ResponseFunctionCalculatorSettings {
     private int width;
     private String fileName;
     private int type;
+    private int levels;
 
     public ResponseFunctionCalculatorSettings() {
     }
@@ -161,5 +162,19 @@ public class ResponseFunctionCalculatorSettings {
      */
     public void setType(int type) {
         this.type = type;
+    }
+
+    /**
+     * @return the levels
+     */
+    public int getLevels() {
+        return levels;
+    }
+
+    /**
+     * @param levels the levels to set
+     */
+    public void setLevels(int levels) {
+        this.levels = levels;
     }
 }
