@@ -1,0 +1,1 @@
+This Plugin consists of several sub routines. Currently planned are a stack builder to build stacks of the images that should be combined into a single HDR image, a response function calculator and a tone mapper supporting various tone mapping algorithms.
